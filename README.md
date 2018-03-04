@@ -11,9 +11,13 @@ Slide decks:
 
 Interactive tutorials:
 
-- https://www.shinyapps.io/admin/#/application/291660
-- https://www.shinyapps.io/admin/#/application/292826
+- https://krlmlr.shinyapps.io/cooking-tutorial/
+- https://krlmlr.shinyapps.io/cooking-drake-tutorial/
 
 RStudio Cloud project:
 
 - https://rstudio.cloud/project/21897
+
+gitter chat:
+
+- https://gitter.im/drake-sib-zurich/Lobby#
