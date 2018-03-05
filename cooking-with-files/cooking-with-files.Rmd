@@ -32,6 +32,6 @@ fried_meat
 
 ## Potatoes
 
-```{r fried_meat}
+```{r cooked_potatoes}
 cooked_potatoes
 ```
