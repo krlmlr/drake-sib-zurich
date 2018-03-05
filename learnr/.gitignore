@@ -4,3 +4,4 @@ packrat/
 packrat/lib*/
 *.html
 /rsconnect
+*.Rproj
