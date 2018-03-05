@@ -1,6 +1,6 @@
 # cooking-with-files
 
-1. Save this file as `make-solution.R`, do not edit `make.R`.
+1. Save `make.R` as `make-solution.R`, do not edit `make.R`.
 
 2. Below, the full plan for creating the ragout is be repeated.
    Substitute the string `"meat"` with code that reads the `raw-meat.txt` file,

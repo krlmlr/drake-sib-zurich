@@ -1,7 +1,7 @@
 # Before starting: Save this file as make-with-files.R!
 
-# Set compatibility option
-pkgconfig::set_config_in("drake::strings_in_dots" = "literals", .in = getNamespace("drake"))
+# Set compatibility option to avoid warnings
+pkgconfig::set_config("drake::strings_in_dots" = "literals")
 
 library(dplyr)
 library(drake)
