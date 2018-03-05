@@ -14,6 +14,12 @@ Interactive tutorials:
 - https://krlmlr.shinyapps.io/cooking-tutorial/
 - https://krlmlr.shinyapps.io/cooking-drake-tutorial/
 
+Reference:
+
+- `cheat-sheet.md`
+- https://ropensci.github.io/drake
+- https://krlmlr.github.io/cooking
+
 RStudio Cloud project:
 
 - https://rstudio.cloud/project/21897
