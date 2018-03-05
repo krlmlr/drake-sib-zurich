@@ -1,4 +1,18 @@
-# Cheat sheet for *drake*
+---
+title: "Cheat sheet for *drake*"
+author: "Kirill Müller"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+fontsize: 12pt
+mainfont: Noto Sans
+monofont: Inconsolata
+geometry: a4paper, margin=2.3cm
+header-includes:
+- \pagenumbering{gobble}
+---
+
+## Basic
 
 `drake_plan()`: Create plan
 
@@ -20,7 +34,7 @@ make() # make last plan again
 `readd()`: Read single target
 
 ```r
-target <- readd("target")
+target <- readd(target)
 ```
 
 `loadd()`: Load targets into an environment
@@ -79,7 +93,7 @@ here("path/to/file.txt")
 
 `here::set_here()`: Create `.here` file to define project directory
 
-# Files
+## Files
 
 `file_in()`, `file_out()`: Mark strings as input and output files.
 
