@@ -1,4 +1,4 @@
-# drake-sib-zurich
+# drake-sib-zurich https://goo.gl/8xa7i5
 
 Workshop repository for the "Make-like declarative workflows with R" tutorial at the SIB in Zurich, March 5, 2018.
 
