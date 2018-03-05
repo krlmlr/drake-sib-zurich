@@ -16,7 +16,7 @@ Interactive tutorials:
 
 Reference:
 
-- [`cheat-sheet.md`](cheat-sheet.md)
+- [`cheat-sheet.pdf`](cheat-sheet.pdf)
 - https://ropensci.github.io/drake
 - https://krlmlr.github.io/cooking
 
