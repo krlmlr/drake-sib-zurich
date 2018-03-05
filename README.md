@@ -27,3 +27,7 @@ RStudio Cloud project:
 gitter chat:
 
 - https://gitter.im/drake-sib-zurich/Lobby#
+
+---
+
+License: CC-BY-SA 4.0
