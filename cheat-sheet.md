@@ -64,3 +64,44 @@ diagnose("target")
 
 # Project organization
 
+All files belong in your *project directory*. Start R somewhere below, and you don't need `setwd()`.
+
+- RStudio project
+- Git repository
+- `.here` file
+
+`here::here()`: Find files below your project directory
+
+```r
+library(here)
+## here() starts at ...
+here("path", "to", "file.txt")
+here("path/to/file.txt")
+```
+
+`here::dr_here()`: Understand your project directory
+
+`here::set_here()`: Create `.here` file
+
+# Files
+
+`file_in()`, `file_out()`: Mark strings as input and output files.
+
+```r
+plan <- drake_plan(
+  text = readLines(file_in("in.txt")),
+  writeLines(text, file_out("out.txt"))
+)
+```
+
+`knitr_in()`: Mark a string as input file for *knitr*.
+
+```r
+plan <- drake_plan(
+  rmarkdown::render(knitr_in("report.Rmd"), output_file = file_out("report.md"))
+)
+```
+
+# Dynamic plans
+
+`evaluate_plan()`, `plan_analyses()`, `plan_summaries()`, `expand_plan()`, `gather_plan()`
