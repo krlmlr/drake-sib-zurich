@@ -1,4 +1,4 @@
-# Basic operations
+# Cheat sheet for *drake*
 
 `drake_plan()`: Create plan
 
@@ -30,7 +30,7 @@ loadd()
 loadd(starts_with(dep))
 ```
 
-# Diagnosis
+## Diagnosis
 
 `check_plan()`: Check plan
 
@@ -62,13 +62,9 @@ outdated(config)
 diagnose("target")
 ```
 
-# Project organization
+## Project organization
 
 All files belong in your *project directory*. Start R somewhere below, and you don't need `setwd()`.
-
-- RStudio project
-- Git repository
-- `.here` file
 
 `here::here()`: Find files below your project directory
 
@@ -81,7 +77,7 @@ here("path/to/file.txt")
 
 `here::dr_here()`: Understand your project directory
 
-`here::set_here()`: Create `.here` file
+`here::set_here()`: Create `.here` file to define project directory
 
 # Files
 
@@ -98,10 +94,27 @@ plan <- drake_plan(
 
 ```r
 plan <- drake_plan(
-  rmarkdown::render(knitr_in("report.Rmd"), output_file = file_out("report.md"))
+  rmarkdown::render(
+    knitr_in("report.Rmd"),
+    output_file = file_out("report.md")
+  )
 )
 ```
 
-# Dynamic plans
+## Dynamic plans
 
-`evaluate_plan()`, `plan_analyses()`, `plan_summaries()`, `expand_plan()`, `gather_plan()`
+- `evaluate_plan()`, `plan_analyses()`, `plan_summaries()`, `expand_plan()`, `gather_plan()`
+- data manipulation, e.g. with *dplyr*
+
+## Read more
+
+Project website: https://ropensci.github.io/drake
+
+- Home page
+- Reference
+- Get Started
+- Articles:
+    - General best practices
+    - Debugging and testing
+    - Caution
+- FAQ
