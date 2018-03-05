@@ -1,0 +1,6 @@
+packrat/
+.Rprofile
+.Rhistory
+packrat/lib*/
+*.html
+/rsconnect

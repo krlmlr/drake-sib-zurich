@@ -1,0 +1,211 @@
+---
+title: "Exercises: Cooking"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+
+library(cooking)
+```
+
+## Introduction
+
+These exercises introduce the *cooking* toy package. In many cases a part of the code is given, and your task is to replace the dots `...` with something meaningful before you can run the code. All exercises are self-contained.
+
+You will only receive feedback to questions, there's no automatic validation for the R code.
+
+The *cooking* package is loaded for all exercises:
+
+```r
+library(cooking)
+```
+
+
+## Buy meat
+
+Use the `buy()` function to buy meat.
+
+```{r buy, exercise=TRUE}
+buy("...")
+```
+
+What changes if you pass the `from` argument?
+
+```{r buy-from, exercise=TRUE}
+buy(..., from = "the butcher's")
+```
+
+Can you store the meat for later use?
+
+```{r buy-store, exercise=TRUE}
+meat <- ...
+meat
+```
+
+```{r buy-store-solution}
+meat <- buy("meat")
+meat
+```
+
+## Chop meat
+
+We have our raw meat ready (in the `meat` variable).
+
+```{r prepare-chop}
+meat <- buy("meat")
+```
+
+Double-check by accessing this variable.
+
+```{r chop-test, exercise=TRUE, exercise.setup = "prepare-chop"}
+meat
+```
+
+Now let's chop it, use the `chop()` function.
+
+```{r chop-meat, exercise=TRUE, exercise.setup = "prepare-chop"}
+chop(...)
+```
+
+Store the chopped meat in a variable for later access.
+
+```{r chop-meat-store, exercise=TRUE, exercise.setup = "prepare-chop"}
+... <- ...
+```
+
+```{r chop-meat-store-solution}
+chopped_meat <- chop(meat)
+chopped_meat
+```
+
+## Fry meat
+
+We have chopped the meat and stored it in the `chopped_meat` variable.
+
+```{r prepare-fry}
+chopped_meat <- chop(buy("meat"))
+```
+
+Double-check by accessing this variable.
+
+```{r fry-test, exercise=TRUE, exercise.setup = "prepare-fry"}
+chopped_meat
+```
+
+Fry the chopped meat with oil, using the `fry()` function.
+
+```{r fry-meat, exercise=TRUE, exercise.setup = "prepare-fry"}
+...(..., with = "oil")
+```
+
+Let's add garlic, too.
+
+```{r fry-meat-garlic, exercise=TRUE, exercise.setup = "prepare-fry"}
+...(..., ...)
+```
+
+<div id="fry-meat-garlic-hint">
+**Hint**: Use `with = c("oil", "garlic")`.
+</div>
+
+Store the fried meat in a variable for later access.
+
+```{r fry-meat-store, exercise=TRUE, exercise.setup = "prepare-fry"}
+
+```
+
+```{r fry-meat-store-solution}
+fried_meat <- fry(chopped_meat, with = "oil")
+fried_meat
+```
+
+## The ragout
+
+The fried meat is available in the `fried_meat` variable.
+
+```{r prepare-combine}
+fried_meat <- fry(chop(buy("meat")), with = "oil")
+```
+
+Double-check by accessing this variable.
+
+```{r combine-test, exercise=TRUE, exercise.setup = "prepare-combine"}
+fried_meat
+```
+
+Combine the fried meat with vegetables (using `combine()`) to finish the ragout.
+
+```{r combine-meat, exercise=TRUE, exercise.setup = "prepare-combine"}
+
+```
+
+Put the ragout aside into a variable for later access.
+
+```{r ragout-store, exercise=TRUE, exercise.setup = "prepare-combine"}
+
+```
+
+```{r ragout-store-solution}
+ragout <- combine(fried_meat, with = "vegetables")
+ragout
+```
+
+## The salad
+
+We need to learn how to slice and dice first. Our new `slice()` function is supposed to cut its ingredient to slices:
+
+```{r slice, exercise=TRUE, exercise.setup = "prepare-combine"}
+slice <- make_cooking("...")
+slice("cucumber")
+```
+
+We also need a `dice()` function.
+
+```{r dice, exercise=TRUE, exercise.setup = "prepare-combine"}
+...
+dice("tomato")
+```
+
+## Dinner's ready!
+
+We have our `ragout`, and our `slice()` and `dice()` functions
+
+```{r prepare-serve}
+ragout <- combine(fry(chop(buy("meat")), with = "oil"), with = "vegetables")
+slice <- make_cooking("sliced")
+dice <- make_cooking("diced")
+```
+
+Double-check:
+
+```{r serve-test, exercise=TRUE, exercise.setup = "prepare-serve"}
+ragout
+slice("tomato")
+dice("cucumber")
+```
+
+Now serve a meal that consists of the ragout and a dressed salad with ingredients of your choice. Add other components if you like: bread (with butter?), a soup maybe, dessert, ...
+
+```{r serve, exercise=TRUE, exercise.setup = "prepare-serve"}
+combine(
+  ...,
+  ...,
+  name = "meal"
+)
+```
+
+```{r serve-solution}
+combine(
+  ragout,
+  combine(
+    slice("cucumber"),
+    dice("tomato"),
+    "dressing",
+    name = "salad"
+  ),
+  name = "meal"
+)
+```

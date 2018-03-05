@@ -1,0 +1,954 @@
+---
+title: "Exercises: Cooking with drake"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+
+pkgconfig::set_config_in("drake::strings_in_dots" = "literals", .in = globalenv())
+
+knitr::opts_chunk$set(collapse = TRUE)
+
+library(dplyr)
+library(drake)
+library(cooking)
+```
+
+## Introduction
+
+These exercises introduce the *drake* toy package using functions from *cooking*. In many cases a part of the code is given, and your task is to replace the dots `...` with something meaningful before you can run the code. All exercises on the same topic page build upon each other: If a solution is given, you can assume that objects created in the solution are available to subsequent exercises on the same topic.
+
+If an exercise comes with complete code without dots `...`, it is intended to demonstrate something. Please run the code.
+
+You will only receive feedback to questions, there's no automatic validation for the R code.
+
+The *dplyr*, *drake*, and *cooking* packages are loaded for all exercises:
+
+```r
+library(dplyr)
+library(drake)
+library(cooking)
+```
+
+## Plan to buy meat
+
+Add a command that consists of a call to the `buy()` function to your plan. Run the plan and show the output.
+
+```{r drake-buy, exercise=TRUE}
+plan <- drake_plan(
+  meat = buy("...")
+)
+```
+
+```{r drake-buy-solution}
+plan <- drake_plan(
+  meat = buy("meat")
+)
+```
+
+Display the plan:
+
+```{r drake-buy-view, exercise=TRUE, exercise.setup = "drake-buy-solution"}
+plan
+str(plan)
+```
+
+Execute it:
+
+```{r drake-buy-make, exercise=TRUE, exercise.setup = "drake-buy-solution"}
+make(...)
+```
+
+```{r drake-buy-make-solution}
+make(plan)
+```
+
+```{r drake-buy-make-solution-all}
+plan <- drake_plan(
+  meat = buy("meat")
+)
+make(plan, verbose = FALSE)
+```
+
+Show the contents of the target:
+
+```{r drake-buy-readd, exercise=TRUE, exercise.setup = "drake-buy-make-solution-all"}
+readd(..., verbose = FALSE)
+```
+
+```{r drake-buy-need-to-remake}
+question("What happens if we call make() again?",
+  answer("All targets will be up to date", correct = TRUE),
+  answer("We need to buy the meat again")
+)
+```
+
+Verify:
+
+```{r drake-buy-make-again, exercise=TRUE, exercise.setup = "drake-buy-make-solution-all"}
+# Without arguments, the most recently used plan will be reused
+make()
+```
+
+## Plan to chop and fry the meat
+
+Extend the plan with a command that consists of a call to the `chop()` function. Run the plan and show the output.
+
+```{r drake-chop, exercise=TRUE}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = ...(meat)
+)
+```
+
+```{r drake-chop-solution}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat)
+)
+```
+
+
+Execute the `plan` with a call to `make()`:
+
+```{r drake-chop-make, exercise=TRUE, exercise.setup = "drake-chop-solution"}
+
+```
+
+```{r drake-chop-make-solution, eval = FALSE}
+make(plan)
+```
+
+```{r drake-chop-make-solution-all}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat)
+)
+make(plan, verbose = FALSE)
+```
+
+Show the contents of the newly created target. What's the effect of `verbose = FALSE`?
+
+```{r drake-chop-readd, exercise=TRUE, exercise.setup = "drake-chop-make-solution-all"}
+readd(..., verbose = FALSE)
+```
+
+Now extend the plan to also fry the chopped meat `with = "oil"`:
+
+```{r drake-fry, exercise=TRUE}
+plan <- drake_plan(
+  meat = ...,
+  chopped_meat = ...,
+  fried_meat = ...
+)
+```
+
+```{r drake-fry-solution}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = "oil")
+)
+```
+
+```{r drake-fry-solution-all}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = "oil")
+)
+make(plan, targets = "chopped_meat", verbose = FALSE)
+```
+
+Now execute the `plan` and show the fried meat:
+
+```{r drake-fry-make, exercise=TRUE, exercise.setup = "drake-fry-solution-all"}
+
+```
+
+```{r drake-fry-make-solution, eval = FALSE}
+make(plan)
+readd(fried_meat)
+```
+
+Visualize the dependencies in the plan:
+
+```{r drake-fry-vis, exercise = TRUE, exercise.setup = "drake-fry-solution"}
+config <- make(plan)
+vis_drake_graph(config)
+```
+
+## Fry with garlic
+
+For each exercise of this topic we assume that the plan from last topic has been created and executed:
+
+```r
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = "oil")
+)
+make(plan, verbose = FALSE)
+```
+
+```{r setup-garlic, eval = FALSE, echo = TRUE}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = "oil")
+)
+make(plan, verbose = FALSE)
+```
+
+Adapt the plan to fry `with = c("oil", "garlic")`:
+
+```{r drake-garlic-fry, exercise=TRUE, exercise.setup = "setup-garlic"}
+plan <- drake_plan(
+  ...
+)
+```
+
+```{r drake-garlic-fry-solution}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(meat, with = c("oil", "garlic"))
+)
+```
+
+```{r drake-garlic-fry-solution-all}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = "oil")
+)
+make(plan, verbose = FALSE)
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+```
+
+```{r drake-garlic-targets-change}
+question("What do we get if we query the value of the `fried_meat` target now?",
+  answer("Meat fried with oil", correct = TRUE),
+  answer("Meat fried with oil and garlic",
+         message = "No, *drake* is not yet aware of the new plan, and we haven't run it yet.")
+)
+```
+
+Double-check this:
+
+```{r drake-garlic-new-plan-without-make, exercise=TRUE, exercise.setup = "drake-garlic-fry-solution-all"}
+readd(fried_meat)
+```
+
+The visualization also shows which targets are up to date.
+
+```{r drake-garlic-new-plan-without-make-vis, exercise=TRUE, exercise.setup = "drake-garlic-fry-solution-all"}
+config <- drake_config(plan)
+vis_drake_graph(config)
+```
+
+Use `outdated()` to list the outdated targets.
+
+```{r drake-garlic-new-plan-without-make-outdated, exercise=TRUE, exercise.setup = "drake-garlic-fry-solution-all"}
+config <- drake_config(plan)
+outdated(...)
+```
+
+
+
+```{r drake-garlic-targets-outdated}
+question("Why are the `meat` and `chopped_meat` targets not listed as outdated targets?",
+  answer("Because the code and the inputs that define these targets haven't changed.", correct = TRUE),
+  answer("Because they are listed before `fried_meat` in the plan data frame.",
+         message = "No, the order of rows in the plan data frame doesn't matter, *drake* will only consider the dependency relationship.")
+)
+```
+
+
+```{r drake-garlic-need-to-remake-quiz}
+question(
+  "How do we update the `fried_meat` target? Please mark all correct answers.",
+  
+  answer("`make()`",
+         message = "Running `make()` won't change anything, because we haven't told *drake* about our new plan yet."),
+
+  answer("`make(); make()`",
+         message = "Even running `make()` twice won't change anything, because we haven't told *drake* about our new plan yet."),
+
+  answer("`make(plan)`",
+         correct = TRUE),
+
+  answer("`make(plan, targets = \"meat\")`",
+         message = "The `meat` doesn't need updating."),
+
+  answer("`make(plan, targets = \"chopped_meat\")`",
+         message = "The `chopped_meat` doesn't need updating."),
+
+  answer("`make(plan, targets = \"fried_meat\")`",
+         correct = TRUE)
+)
+```
+
+Update all targets now, and double-check that they are up to date:
+
+```{r drake-garlic-make-again, exercise=TRUE, exercise.setup = "drake-garlic-fry-solution-all"}
+
+```
+
+```{r drake-garlic-make-again-solution, eval = FALSE}
+make(plan)
+readd(meat)
+readd(chopped_meat)
+readd(fried_meat)
+```
+
+## Go to the butcher shop instead
+
+For each exercise of this topic we assume that the plan from last topic has been created and executed:
+
+```r
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+make(plan, verbose = FALSE)
+```
+
+```{r setup-butcher, eval = FALSE, echo = TRUE}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+make(plan, verbose = FALSE)
+```
+
+Adapt the plan to buy meat `from = "the butcher shop"` instead of the supermarket.
+
+```{r drake-butcher-buy, exercise=TRUE, exercise.setup = "setup-butcher"}
+plan <- drake_plan(
+  ...
+)
+```
+
+```{r drake-butcher-buy-solution}
+plan <- drake_plan(
+  meat = buy("meat", from = "the butcher shop"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+```
+
+```{r drake-butcher-buy-solution-all}
+plan <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+make(plan, verbose = FALSE)
+plan <- drake_plan(
+  meat = buy("meat", from = "the butcher shop"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+```
+
+```{r drake-butcher-targets-change}
+question("What do we get if we query the value of the `meat` target now?",
+  answer("Meat from the butcher shop",
+         message = "No, *drake* is not yet aware of the new plan, and we haven't run it yet."),
+  answer("Meat from the supermarket", correct = TRUE)
+)
+```
+
+```{r drake-butcher-targets-change-chopped}
+question("What do we get if we query the value of the `chopped_meat` target now?",
+  answer("Chopped meat made of meat from the butcher shop",
+         message = "No, *drake* is not yet aware of the new plan, and we haven't run it yet."),
+  answer("Raw meat from the supermarket",
+         message = "No, `chopped_meat` still has chopped meat."),
+  answer("Chopped meat made of meat from the supermarket", correct = TRUE)
+)
+```
+
+Double-check this:
+
+```{r drake-butcher-new-plan-without-make, exercise=TRUE, exercise.setup = "drake-butcher-buy-solution-all"}
+readd(meat)
+readd(chopped_meat)
+```
+
+```{r drake-butcher-need-to-remake-quiz}
+question(
+  "How do we update all targets? Please mark all correct answers.",
+  
+  answer("`make()`",
+         message = "Running `make()` won't change anything, because we haven't told *drake* about our new plan yet."),
+
+  answer("`make(); make()`",
+         message = "Even running `make()` twice won't change anything, because we haven't told *drake* about our new plan yet."),
+
+  answer("`make(plan)`",
+         correct = TRUE),
+
+  answer("`make(plan, targets = \"meat\")`",
+         message = "Updating the `meat` target only will not automatically update the `chopped_meat` and `fried_meat` targets."),
+
+  answer("`make(plan, targets = \"chopped_meat\")`",
+         message = "Updating the `chopped_meat` target only will not automatically update the `fried_meat` target."),
+
+  answer("`make(plan, targets = \"fried_meat\")`",
+         correct = TRUE)
+)
+```
+
+Update all targets now, and double-check that they are up to date:
+
+```{r drake-butcher-make-again, exercise=TRUE, exercise.setup = "drake-butcher-buy-solution-all"}
+
+```
+
+```{r drake-butcher-make-again-solution, eval = FALSE}
+make(plan)
+readd(meat)
+readd(chopped_meat)
+readd(fried_meat)
+```
+
+```{r drake-butcher-targets-quiz}
+question(
+  "Which of the following statements is correct?",
+  
+  answer("We need to restart the R session befor we can update the `chopped_meat` target.",
+         message = "Restarting the R session is not necessary, but doesn't hurt either, because we have recorded the work to be done in a plan."),
+  
+  answer("The `chopped_meat` target cannot be updated before the `meat` target is updated.",
+         correct = TRUE),
+  
+  answer("The `chopped_meat` target cannot be updated before the `fried_meat` target is updated.",
+         message = "No, because `chopped_meat` is not a dependency to `fried_meat` (only the other way round)."),
+  
+  answer("We need to update the `meat` target manually before we can update the `chopped_meat` target.",
+         message = "No, *drake* will automatically update the `meat` target before starting to work on `chopped_meat`."),
+
+  answer("To update the `meat` target, we need to reload the *drake* package.",
+         message = "Reloading the *drake* package doesn't have any side effects."),
+
+  answer("Running `make(plan, targets = \"meat\"); make()` will update the `chopped_meat` target.",
+         correct = TRUE),
+
+  answer("If we run the code `meat = buy(\"meat\", from = \"the butcher shop\")`, the `meat` target will be updated.",
+         message = "This will update the variable `meat`, but *not* the target."),
+
+  answer("If we run the code `meat = buy(\"tofu\"); make()`, we can trick *drake* into building `chopped_meat` and `fried_meat` with the wrong ingredients.",
+         message = "No, `make()` will remove the `meat` object we created.")
+)
+```
+
+## Prepare vegetables
+
+We don't assume any plans for the exercises in this topic.
+
+Create a plan solely to prepare carrots: Buy them and `peel()` them. Run the plan.
+
+```{r drake-vegetables-carrots, exercise=TRUE}
+plan_carrots <- drake_plan(
+  carrots = ...,
+  peeled_carrots = ...
+)
+
+...
+```
+
+```{r drake-vegetables-carrots-solution}
+plan_carrots <- drake_plan(
+  carrots = buy("carrots"),
+  peeled_carrots = peel(carrots)
+)
+
+make(plan_carrots)
+```
+
+Create another plan solely to prepare potatoes: Buy them, peel them, and then `cook()` them. Implement a function `prepare_potatoes()` to both peel and cook the potatoes.
+
+```{r drake-vegetables-potatoes, exercise=TRUE}
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- ...(peeled_potatoes)
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  ...,
+  cooked_potatoes = ...
+)
+
+...
+```
+
+```{r drake-vegetables-potatoes-solution}
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes)
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+
+make(plan_potatoes)
+```
+
+
+```{r drake-vegetables-potatoes-solution-all}
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes)
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+
+make(plan_potatoes, verbose = FALSE)
+```
+
+We forgot to add salt when cooking the potatoes. Add `with = "salt"` to the `cook()` call in the `prepare_potatoes()` function. Does this invalidate the `cooked_potatoes` target? What happens if you call `make()`? Show the value of the `cooked_potatoes` target.
+
+```{r drake-vegetables-salt, exercise=TRUE, exercise.setup = "drake-vegetables-potatoes-solution-all"}
+prepare_potatoes <- ...
+
+message("*** Showing outdated targets")
+config <- drake_config(verbose = FALSE)
+outdated(...)
+
+message("*** Updating targets")
+make()
+
+message("*** Displaying target")
+...
+```
+
+```{r drake-vegetables-salt-solution}
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+message("*** Showing outdated targets")
+config <- drake_config(verbose = FALSE)
+outdated(config)
+
+message("*** Updating targets")
+make()
+
+message("*** Displaying target")
+readd(cooked_potatoes)
+```
+
+
+```{r drake-vegetables-salt-solution-all}
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+
+make(plan_potatoes, verbose = FALSE)
+```
+
+Verify the visualization to see why the `cooked_potatoes` target is updated when we change the definition of `prepared_potatoes()`.
+
+```{r drake-vegetables-salt-vis, exercise=TRUE, exercise.setup = "drake-vegetables-salt-solution-all"}
+vis_drake_graph(drake_config())
+```
+
+```{r drake-vegetables-functions-quiz}
+question(
+  "Why does `make()` update the `cooked_potatoes` target?",
+  
+  answer("Because we changed the text of the command used to create this target.",
+         message = "We didn't in fact change the text of the command."),
+  
+  answer("Because we changed a function used by the command that creates this target.",
+         correct = TRUE),
+  
+  answer("Because `make()` always rebuilds all targets.",
+         message = "`make()` will only update the outdated targets."),
+  
+  answer("Because `make()` always rebuilds all targets if the command calls functions defined by the user.",
+         message = "`make()` will only update the outdated targets. It will even analyze the functions defined by the user, as well as any other functions it uses.")
+)
+```
+
+## Combine the ragout
+
+In the last two topics we created three plans (and one function), which will be available for each exercise in this topic:
+
+```r
+plan_meat <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+
+plan_carrots <- drake_plan(
+  carrots = buy("carrots"),
+  peeled_carrots = peel(carrots)
+)
+
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+```
+
+```{r setup-combine, eval = FALSE}
+plan_meat <- drake_plan(
+  meat = buy("meat", from = "the butcher shop"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+
+plan_carrots <- drake_plan(
+  carrots = buy("carrots"),
+  peeled_carrots = peel(carrots)
+)
+
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+```
+
+To create a ragout from the three components `fried_meat`, `peeled_carrots`, and `cooked_potatoes`, we need another step. Implement it in a new plan using the `combine()` function:
+
+```{r drake-combine-ragout, exercise=TRUE, exercise.setup = "setup-combine"}
+plan_ragout <- ...
+```
+
+```{r drake-combine-ragout-hint, eval = FALSE}
+plan_ragout <- drake_plan(
+  ragout = combine(fried_meat, ...)
+)
+```
+
+```{r drake-combine-ragout-solution, eval = FALSE}
+plan_ragout <- drake_plan(
+  ragout = combine(fried_meat, peeled_carrots, cooked_potatoes)
+)
+```
+
+```{r drake-combine-ragout-solution-all, eval = FALSE}
+plan_meat <- drake_plan(
+  meat = buy("meat", from = "the butcher shop"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+
+plan_carrots <- drake_plan(
+  carrots = buy("carrots"),
+  peeled_carrots = peel(carrots)
+)
+
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+
+plan_ragout <- drake_plan(
+  ragout = combine(fried_meat, peeled_carrots, cooked_potatoes)
+)
+```
+
+For safe operation and optimal reproducibility, we need one single plan. How do we combine the four plans? (Hint: Remember the plans are data frames.)
+
+```{r drake-combine-plans, exercise=TRUE, exercise.setup = "drake-combine-ragout-solution-all"}
+
+```
+
+```{r drake-combine-plans-hint-1, eval = FALSE}
+plan <- bind_rows(...)
+```
+
+```{r drake-combine-plans-hint-2, eval = FALSE}
+plan <- bind_rows(plan_meat, ...)
+```
+
+```{r drake-combine-plans-solution, eval = FALSE}
+plan <- bind_rows(plan_meat, plan_carrots, plan_potatoes, plan_ragout)
+```
+
+```{r drake-combine-plans-solution-all, eval = FALSE}
+plan_meat <- drake_plan(
+  meat = buy("meat", from = "the butcher shop"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+
+plan_carrots <- drake_plan(
+  carrots = buy("carrots"),
+  peeled_carrots = peel(carrots)
+)
+
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+
+plan_ragout <- drake_plan(
+  ragout = combine(fried_meat, peeled_carrots, cooked_potatoes)
+)
+
+plan <- bind_rows(plan_meat, plan_carrots, plan_potatoes, plan_ragout)
+```
+
+View the dependency graph:
+
+```{r drake-combine-view, exercise=TRUE, exercise.setup = "drake-combine-plans-solution-all"}
+
+```
+
+```{r drake-combine-view-hint, eval = FALSE}
+config <- ...
+vis_...(...)
+```
+
+Run the plan:
+
+```{r drake-combine-run, exercise=TRUE, exercise.setup = "drake-combine-plans-solution-all"}
+
+```
+
+```{r drake-combine-run-solution, eval = FALSE}
+make(plan)
+```
+
+```{r drake-combine-run-solution-all, eval = FALSE}
+plan_meat <- drake_plan(
+  meat = buy("meat", from = "the butcher shop"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+
+plan_carrots <- drake_plan(
+  carrots = buy("carrots"),
+  peeled_carrots = peel(carrots)
+)
+
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+
+plan_ragout <- drake_plan(
+  ragout = combine(fried_meat, peeled_carrots, cooked_potatoes)
+)
+
+plan <- bind_rows(plan_meat, plan_carrots, plan_potatoes, plan_ragout)
+
+make(plan, verbose = FALSE)
+```
+
+Enjoy!
+
+```{r drake-combine-enjoy, exercise=TRUE, exercise.setup = "drake-combine-run-solution-all"}
+readd(ragout)
+```
+
+
+
+## Combine the ragout the wrong way
+
+The four plans and one function from the last topic will be available for each exercise in this topic:
+
+```r
+plan_meat <- drake_plan(
+  meat = buy("meat"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+
+plan_carrots <- drake_plan(
+  carrots = buy("carrots"),
+  peeled_carrots = peel(carrots)
+)
+
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+
+plan_ragout <- drake_plan(
+  ragout = combine(fried_meat, peeled_carrots, cooked_potatoes)
+)
+```
+
+```{r setup-uncombine, eval = FALSE}
+plan_meat <- drake_plan(
+  meat = buy("meat", from = "the butcher shop"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+
+plan_carrots <- drake_plan(
+  carrots = buy("carrots"),
+  peeled_carrots = peel(carrots)
+)
+
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+
+plan_ragout <- drake_plan(
+  ragout = combine(fried_meat, peeled_carrots, cooked_potatoes)
+)
+```
+
+Try creating the ragout by just running `plan_ragout`:
+
+```{r drake-uncombine-make-incomplete, exercise=TRUE, exercise.setup = "setup-uncombine"}
+make(plan_ragout)
+```
+
+```{r drake-uncombine-make-incomplete-all, eval = FALSE}
+plan_meat <- drake_plan(
+  meat = buy("meat", from = "the butcher shop"),
+  chopped_meat = chop(meat),
+  fried_meat = fry(chopped_meat, with = c("oil", "garlic"))
+)
+
+plan_carrots <- drake_plan(
+  carrots = buy("carrots"),
+  peeled_carrots = peel(carrots)
+)
+
+prepare_potatoes <- function(potatoes) {
+  peeled_potatoes <- peel(potatoes)
+  cooked_potatoes <- cook(peeled_potatoes, with = "salt")
+  cooked_potatoes
+}
+
+plan_potatoes <- drake_plan(
+  potatoes = buy("potatoes"),
+  cooked_potatoes = prepare_potatoes(potatoes)
+)
+
+plan_ragout <- drake_plan(
+  ragout = combine(fried_meat, peeled_carrots, cooked_potatoes)
+)
+
+try(make(plan_ragout, verbose = FALSE))
+```
+
+Visualize the failed run:
+
+```{r drake-uncombine-make-vis, exercise=TRUE, exercise.setup = "drake-uncombine-make-incomplete-all"}
+
+```
+
+```{r drake-uncombine-make-vis-hint, eval = FALSE}
+config <- ...
+...(...)
+```
+
+What went wrong with the `ragout`?
+
+```{r drake-uncombine-make-diagnose, exercise=TRUE, exercise.setup = "drake-uncombine-make-incomplete-all"}
+diagnose(...)
+```
+
+```{r drake-uncombine-functions-quiz}
+question(
+  "Why does `make()` fail?",
+  
+  answer("Because the plan doesn't contain the `fried_meat`, `peeled_carrots` and `cooked_potatoes` targets.",
+         correct = TRUE),
+
+  answer("Because we don't have variables named `fried_meat`, `peeled_carrots` and `cooked_potatoes` in our global environment.",
+         message = "Beware! We could perhaps run such a plan, but then `fried_meat`, `peeled_carrots` and `cooked_potatoes` would not be under the control of *drake*.")
+)
+```
+
+Try running all plans in sequence, and visualizing the run. Do you see the problem?
+
+```{r drake-uncombine-make-sequence, exercise=TRUE, exercise.setup = "setup-uncombine"}
+make(plan_meat)
+make(plan_carrots)
+make(plan_potatoes)
+config <- make(plan_ragout)
+vis_drake_graph(config)
+```
+
+```{r drake-uncombine-sequence-quiz}
+question(
+  "Why does `make()` succeed?",
+  
+  answer("Because running plans in sequence effectively combines them.",
+         message = "We need to create one single plan that contains all targets for optimal reproducibility."),
+  
+  answer("Because the first three `make()` runs have created objects named `fried_meat`, `peeled_carrots` and `cooked_potatoes` in our global environment as a side effect.",
+         correct = TRUE)
+)
+```
