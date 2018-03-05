@@ -14,6 +14,8 @@ Interactive tutorials:
 - https://krlmlr.shinyapps.io/cooking-tutorial/
 - https://krlmlr.shinyapps.io/cooking-drake-tutorial/
 
+(See also the `.Rmd` files in the [learnr](learnr) directory: Open, then select "Run document".)
+
 Reference:
 
 - [`cheat-sheet.pdf`](cheat-sheet.pdf)
